@@ -16,7 +16,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import PropTypes from 'prop-types';
 import { ValidationSchema } from '../../helper';
 import { MyContext } from '../../contexts';
-import callApi from '../../lib/utils/api';
+// import callApi from '../../lib/utils/api';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -51,7 +51,6 @@ export default function SignUp(props) {
     address: "",
     dob: "",
     role: "",
-    mobileNumber: 0,
     password: "",
     confirmPassword: "",
     isValid: false,
@@ -64,7 +63,6 @@ export default function SignUp(props) {
       Address: true,
       Dob: true,
       Role: true,
-      MobileNumber: true,
       ConfirmPassword: true,
     },
   })
@@ -85,21 +83,28 @@ export default function SignUp(props) {
     });
   }
 
-  async function handleLoader(data, openSnackBar) {
-    console.log('data');
+  async function handleLoader(signUpUser, openSnackBar) {
       await toggler();
-      const { message, status } = data;
-      const { history } = props;
-      setState({ ...state, loader: false, isValid: true });
-      if (status === 'OK') {
-        history.push('/login')
+      try {
+        const { email, password, name, address, dob, role } = state;
+        const { history } = props;
+        const response = await signUpUser({ variables: { name, email, password, address, dob, role } });
+        console.log('value of resposne', response);
+        const { data: { signUpUser: signUp } } = response;
+        if(signUp) {
+          openSnackBar('Sign Up successful', 'success');
+        }
+        setState({ ...state, loader: false, isValid: true });
+        history.push('/login');
+      } catch (error) {
+        toggler();
+        openSnackBar('This is an Error!', 'error');
       }
-      openSnackBar(message, 'success');
   }
 
    function hasError(field) {
     const {
-      allErrors, touch, email, password, name, address, dob, role, mobileNumber, confirmPassword,
+      allErrors, touch, email, password, name, address, dob, role, confirmPassword,
     } = state;
     ValidationSchema.validateAt(field, {
       Email: email,
@@ -108,7 +113,6 @@ export default function SignUp(props) {
       Address: address,
       Dob: dob,
       Role: role,
-      MobileNumber: mobileNumber,
       ConfirmPassword: confirmPassword,
     }).then(() => {
       if (allErrors[field] && !touch[field]) {
@@ -166,14 +170,8 @@ export default function SignUp(props) {
   const {
     loader,
     isValid,
-    name,
-    email,
-    address,
-    dob,
-    role,
-    mobileNumber,
-    password,
   } = state;
+  const { signUpUser } = props;
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -262,25 +260,9 @@ export default function SignUp(props) {
                   <em>None</em>
                 </MenuItem>
                 <MenuItem value="user">User</MenuItem>
-                <MenuItem value="owner">Owner</MenuItem>
                 <MenuItem value="product-manager">Product Manager</MenuItem>
               </Select>
               <p style={customStyle}>{getError('Role')}</p>
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="mobileNumber"
-                label="Mobile Number"
-                value={state.mobileNumber}
-                name="mobileNumber"
-                error={!!getError('MobileNumber')}
-                helperText={getError('MobileNumber')}
-                onChange={handleChange}
-                onBlur={() => isTouched('MobileNumber')}
-              />
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -324,8 +306,7 @@ export default function SignUp(props) {
                 className={classes.submit}
                 disabled={!isValid}
                 onClick={async () => {
-                  handleLoader(await callApi({ data: { email, password, name, address, dob, role, mobileNumber } },
-                    '/user/signup', 'post'), value.openSnackBar);
+                  handleLoader(signUpUser, value.openSnackBar);
                 }}
               >
                 <span>{loader ? <CircularProgress size={20} /> : ''}</span>

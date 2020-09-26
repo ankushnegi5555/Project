@@ -30,10 +30,6 @@ const ValidationSchema = yup.object().shape({
   .string()
   .required('Role is a required field')
   .min(4), 
-  MobileNumber: yup
-  .number()
-  .required('Number is a required field')
-  .min(10),
   Hobby: yup
   .string()
   .required('Hobby is a required field')
