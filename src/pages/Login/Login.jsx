@@ -15,7 +15,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import * as ls from 'local-storage';
 import { MyContext } from '../../contexts';
 import LoginValidationSchema from './helper';
-import callApi from '../../lib/utils/api';
+// import callApi from '../../lib/utils/api';
 
 const styles = () => ({
   root: {
@@ -79,14 +79,19 @@ class LoginPage extends React.Component {
     });
   }
 
-  handleLoader = async (data, openSnackBar) => {
+  handleLoader = async (loginUser, openSnackBar) => {
     await this.toggler();
-    const { message, status, data: token } = await data;
-    const { history } = this.props;
-    await this.setState({ loader: false, isValid: true }, async() => (status === 'OK' ? (
-      await ls.set('token', token),
-      await history.push('/home'))
-      : openSnackBar(message, status)));
+    try {
+      const { email, password } = this.state;
+      const { history } = this.props;
+      const response = await loginUser({ variables: { email, password } });
+      const { data: { loginUser: token } } = response;
+      ls.set('token', token);
+      history.push('/home');
+    } catch (error) {
+      this.toggler();
+      openSnackBar('This is an Error!', 'error');
+    }
   }
 
   hasError = (field) => {
@@ -116,34 +121,39 @@ class LoginPage extends React.Component {
   };
 
   getError = (field) => {
+    console.log('getError');
     const {
       touch, allErrors, isValid,
     } = this.state;
     this.hasError(field);
+    console.log('getError finish1');
     if (!Object.keys(touch).length && !Object.keys(allErrors).length && !isValid) {
       this.setState({ isValid: true });
+    console.log('getError finish2');
       return allErrors[field];
     }
     if ((Object.keys(touch).length || Object.keys(allErrors).length) && isValid) {
       this.setState({ isValid: false });
     }
+    console.log('getError finish3');
     return allErrors[field];
   }
 
   isTouched = (value) => {
+    console.log('touch')
     const { touch } = this.state;
     delete touch[value];
-    this.setState({ touch });
+    this.setState(touch);
+    console.log('touch finish')
   };
 
   render = () => {
-    const { classes } = this.props;
+    const { classes, loginUser } = this.props;
     const {
-      email,
-      password,
       loader,
       isValid,
     } = this.state;
+    console.log('value of state', this.state)
     return (
       <div>
         <Grid container className={classes.container}>
@@ -200,7 +210,7 @@ class LoginPage extends React.Component {
                   disabled={!isValid}
                   color="primary"
                   onClick={async () => {
-                    this.handleLoader(await callApi({ data: { email, password } }, '/user/login', 'post'), value.openSnackBar);
+                    this.handleLoader(loginUser, value.openSnackBar);
                   }}
                 >
                   <span>{loader ? <CircularProgress size={20} /> : ''}</span>
@@ -225,6 +235,7 @@ class LoginPage extends React.Component {
 LoginPage.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string).isRequired,
   history: PropTypes.objectOf(PropTypes.any).isRequired,
+  loginUser: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(LoginPage);

@@ -1,33 +1,31 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import callApi from '../../lib/utils/api';
-import ls from 'local-storage';
+import { Query } from '@apollo/react-components';
+import { GET_MY_PROFILE } from './query';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Box from '@material-ui/core/Box';
 
 export default class Home extends React.Component {
-  constructor(props) {
-      super(props);
-      this.state = {
-          roles: '',
-      }
-  }
-  componentDidMount = async () => {
-      await callApi({
-        params: {
-          skip: 0, limit: 20,
-        },
-        headers: { authorization: ls.get('token') },
-      },'/user/me','get')
-      .then((response) => {
-        const { role } = response;
-        this.setState({roles: role});
-      });
-  }
   render = () => {
-    const { roles } = this.state;
-    return(
-        <Route exact path="/home">
-          <Redirect to={`/home/${roles}`} />
-        </Route>
+    return (
+      <Query query={GET_MY_PROFILE}>
+      {({loading, data}) => {
+        if (loading) {
+          return (
+            <Box paddingLeft={50}>
+              <CircularProgress />
+            </Box>
+          );
+        }
+        if (data) return (
+            <>
+              <Route exact path="/home">
+                <Redirect to={`/home/${data.getMyProfile.role}`} />
+              </Route>
+            </>
+        );
+      }}
+    </Query>
     );
   };
 }
