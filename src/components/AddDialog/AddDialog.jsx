@@ -14,6 +14,7 @@ import EmailIcon from '@material-ui/icons/Email';
 import ApartmentIcon from '@material-ui/icons/Apartment';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import PhoneIcon from '@material-ui/icons/Phone';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { MyContext } from '../../contexts';
@@ -32,6 +33,7 @@ class AddDialog extends React.Component {
       address: '',
       dob: '',
       role: '',
+      mobileNumber: 0,
       isValid: true,
       loader: false,
       allErrors: {},
@@ -43,6 +45,7 @@ class AddDialog extends React.Component {
         Address: true,
         Dob: true,
         Role: true,
+        MobileNumber: true,
       },
     };
   }
@@ -57,7 +60,7 @@ class AddDialog extends React.Component {
 
   hasError = (field) => {
     const {
-      allErrors, name, email, password, confirmPassword, address, dob, role, touch,
+      allErrors, name, email, password, confirmPassword, address, dob, role, mobileNumber, touch,
     } = this.state;
     ValidationSchema.validateAt(field, {
       Email: email,
@@ -66,6 +69,7 @@ class AddDialog extends React.Component {
       Address: address,
       Dob: dob,
       Role: role,
+      MobileNumber: mobileNumber,
       ConfirmPassword: confirmPassword,
     }).then(() => {
       if (allErrors[field]) {
@@ -117,14 +121,14 @@ class AddDialog extends React.Component {
 
   handleSubmit = async (openSnackBar) => {
     const { onClose } = this.props;
-    const { email, password, name, address, dob, role } = this.state;
+    const { email, password, name, address, dob, role, mobileNumber } = this.state;
     this.toggler();
     await callApi({
       headers: {
         authorization: ls.get('token')
       },
       data: {
-        email, password, name, address, dob, role,
+        email, password, name, address, dob, role, mobileNumber,
       }
     }, '/owner', 'post').then(response => {
       const { message, status } = response;
@@ -140,6 +144,7 @@ class AddDialog extends React.Component {
         address: '',
         dob: '',
         role: '',
+        mobileNumber: 0,
         isValid: true,
         loader: false,
         allErrors: {},
@@ -151,6 +156,7 @@ class AddDialog extends React.Component {
           Address: true,
           Dob: true,
           Role: true,
+          MobileNumber: true,
         },
       });
       onClose();
@@ -171,6 +177,7 @@ class AddDialog extends React.Component {
       address,
       dob,
       role,
+      mobileNumber,
     } = this.state;
     return (
       <div>
@@ -280,6 +287,26 @@ class AddDialog extends React.Component {
                     onChange={this.handleChange}
                     helperText={this.getError('Role')}
                     onBlur={() => this.isTouched('Role')}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Mobile Number"
+                    error={!!this.getError('MobileNumber')}
+                    variant="outlined"
+                    name="mobileNumber"
+                    value={mobileNumber}
+                    fullWidth
+                    InputProps={{
+                      startAdornment: (
+                        <PhoneIcon position="start">
+                          <EmailIcon />
+                        </PhoneIcon>
+                      ),
+                    }}
+                    onChange={this.handleChange}
+                    helperText={this.getError('MobileNumber')}
+                    onBlur={() => this.isTouched('MobileNumber')}
                   />
                 </Grid>
                 <Grid item xs={6}>
