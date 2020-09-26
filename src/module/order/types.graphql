@@ -1,0 +1,24 @@
+input orderCreateInput {
+    product: String!
+    price: Int!
+}
+
+input getAllInput {
+    skip: Int
+    limit: Int
+}
+
+type Order {
+    _id: ID!
+    originalId: ID!
+    product: String!
+    price: Int!
+    address: String!
+    createdAt: String!
+    createdBy: String!
+}
+
+type Orders {
+    count: Int!
+    record: [Order]
+}

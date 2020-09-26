@@ -1,0 +1,35 @@
+type User {
+    _id: ID!
+    originalId: ID!
+    name: String!
+    email: String!
+    role: String!
+    dob: String!
+    address: String!
+    createdAt: String!
+    createdBy: String!
+}
+
+type Users {
+    count: Int!
+    records: [User]
+}
+
+input UserCreate {
+    name: String!
+    email: String!
+    role: String!
+    dob: String!
+    address: String!
+    password: String!
+}
+
+input InputCredentials {
+    email: String!
+    password: String!
+}
+
+input getAllInput {
+    skip: Int
+    limit: Int
+}

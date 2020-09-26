@@ -1,0 +1,12 @@
+export default {
+    subscriptions: {
+        USER_ADDED: 'USER_ADDED',
+        USER_UPDATED: 'USER_UPDATED',
+        USER_DELETED: 'USER_DELETED',
+        PRODUCT_ADDED: 'PRODUCT_ADDED',
+        PRODUCT_UPDATED: 'PRODUCT_UPDATED',
+        PRODUCT_DELETED: 'PRODUCT_DELETED',
+        ORDER_ADDED: 'ORDER_ADDED',
+        ORDER_DELETED: 'ORDER_DELETED',
+    }
+};

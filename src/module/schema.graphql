@@ -1,0 +1,30 @@
+type Query {
+    getMyProfile: User! 
+    getAllUser(options: getAllInput): Users!
+    getAllOrder(options: getAllInput): Orders!
+    getAllProduct(options: getProductInput): Products!
+}
+
+type Mutation {
+    deleteOrder(id: ID!): String!
+    createOrder(order: orderCreateInput): String!
+    createUser(user: userCreateInput): String!
+    updateUser(id: ID!, dataToUpdate: userUpdateInput): String!
+    deleteUser(id: ID!): String!
+    createProduct(product: productCreateInput): String!
+    updateProduct(id: ID!, dataToUpdate: productUpdateInput): String!
+    deleteProduct(id: ID!): String!
+    loginUser(payload: InputCredentials): String!
+    signUpUser(user: UserCreate): String!
+}
+
+type Subscription {
+        userAdded: String!,
+        userUpdated: String!,
+        userDeleted: String!,
+        productAdded: String!,
+        productUpdated: String!,
+        productDeleted: String!,
+        orderAdded: String!,
+        orderDeleted: String!,
+}

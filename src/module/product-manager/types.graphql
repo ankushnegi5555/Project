@@ -1,0 +1,32 @@
+input productCreateInput {
+    name: String!
+    price: Int!
+    description: String!
+}
+
+input productUpdateInput {
+    name: String
+    price: Int
+    description: String
+}
+
+input getProductInput {
+    skip: Int
+    limit: Int
+    all: Boolean!
+}
+
+type Product {
+    _id: ID!
+    originalId: ID!
+    name: String!
+    price: Int!
+    description: String!
+    createdAt: String!
+    createdBy: String!
+}
+
+type Products {
+    count: Int!
+    records: [Product]
+}

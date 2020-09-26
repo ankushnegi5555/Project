@@ -1,0 +1,42 @@
+{
+  "name": "apollo_server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.10.1",
+    "apollo-datasource-rest": "^0.9.4",
+    "apollo-server": "^2.18.0",
+    "apollo-server-express": "^2.18.0",
+    "body-parser": "^1.19.0",
+    "bootstrap": "^4.5.0",
+    "config": "^3.3.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "graphql": "^15.3.0",
+    "graphql-tools": "^6.2.3",
+    "merge-graphql-schemas": "^1.7.8"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/node": "^7.10.5",
+    "@babel/preset-env": "^7.11.5",
+    "tsc-watch": "^4.2.8"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "nodemon": "nodemon --exec babel-node src",
+    "build": "babel src -d dist",
+    "start": "npm run nodemon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ankush-Negi/apollo_server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ankush-Negi/apollo_server/issues"
+  },
+  "homepage": "https://github.com/Ankush-Negi/apollo_server#readme"
+}
